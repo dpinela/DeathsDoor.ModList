@@ -28,6 +28,23 @@ internal class ModListPlugin : Bep.BaseUnityPlugin
             modList.Children.Add(entry.Entry);
         }
     }
+
+    public void FixedUpdate()
+    {
+        if (modList == null)
+        {
+            return;
+        }
+        var visible = GameSceneManager.GetCurrentSceneName() == "TitleScreen";
+        if (visible)
+        {
+            modList.Visibility = MUI.Core.Visibility.Visible;
+        }
+        else
+        {
+            modList.Visibility = MUI.Core.Visibility.Collapsed;
+        }
+    }
 }
 
 internal class ModListEntry
