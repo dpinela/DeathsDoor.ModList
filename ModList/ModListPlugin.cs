@@ -39,6 +39,10 @@ internal class ModListPlugin : Bep.BaseUnityPlugin
         if (visible)
         {
             modList.Visibility = MUI.Core.Visibility.Visible;
+            foreach (var entry in entries)
+            {
+                entry.Update();
+            }
         }
         else
         {
@@ -53,6 +57,8 @@ internal class ModListEntry
 
     private MUI.Elements.TextObject listEntry;
     private Bep.PluginInfo mod;
+    private string baseText;
+    private ModStatus lastStatus = ModStatus.Unknown;
 
     public string Name => mod.Metadata.Name;
     public MUI.Elements.TextObject Entry => listEntry;
@@ -61,7 +67,45 @@ internal class ModListEntry
     {
         this.mod = mod;
         listEntry = new(root, "Mod List Entry " + mod.Metadata.GUID);
-        listEntry.Text = $"{mod.Metadata.Name}: {mod.Metadata.Version}";
+        baseText = $"{mod.Metadata.Name}: {mod.Metadata.Version}";
+        listEntry.Text = baseText;
         listEntry.FontSize = fontSize;
     }
+
+    private ModStatus GetStatus()
+    {
+        if (mod.Instance == null)
+        {
+            return ModStatus.Unknown;
+        }
+        var statusProp = mod.Instance.GetType().GetProperty("InitStatus", typeof(int));
+        if (statusProp == null)
+        {
+            return ModStatus.Unknown;
+        }
+        return (ModStatus)(int)statusProp.GetValue(mod.Instance);
+    }
+
+    public void Update()
+    {
+        if (lastStatus != ModStatus.Unknown)
+        {
+            return;
+        }
+        lastStatus = GetStatus();
+        listEntry.Text = lastStatus switch
+        {
+            ModStatus.Unknown => baseText,
+            ModStatus.InitFailed => baseText + " - INIT FAILED",
+            ModStatus.InitOK => baseText + " - INIT DONE",
+            _ => baseText + $"{baseText} - STATUS CODE {(int)lastStatus}"
+        };
+    }
+}
+
+internal enum ModStatus
+{
+    Unknown,
+    InitOK,
+    InitFailed
 }
