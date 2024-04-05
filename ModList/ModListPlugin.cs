@@ -97,7 +97,7 @@ internal class ModListEntry
         {
             ModStatus.Unknown => baseText,
             ModStatus.InitFailed => baseText + " - INIT FAILED",
-            ModStatus.InitOK => baseText + " - INIT DONE",
+            ModStatus.InitOK => baseText,
             _ => baseText + $"{baseText} - STATUS CODE {(int)lastStatus}"
         };
     }
