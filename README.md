@@ -4,6 +4,11 @@ the top left corner of the title screen. Its primary purpose is
 to help diagnose basic mod installation problems, like having
 the wrong versions of BepInEx or some mods installed.
 
+It depends on [MagicUI][] to lay out the list; make sure to
+install that as well if installing this manually.
+
+[MagicUI]: https://github.com/dpinela/DeathsDoor.MagicUI
+
 # Initialization Failure Detection
 
 To make it easier to diagnose issues caused by a failure to
